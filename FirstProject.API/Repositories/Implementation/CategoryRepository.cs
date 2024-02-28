@@ -2,6 +2,7 @@
 using FirstProject.API.Models.Domain;
 using FirstProject.API.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstProject.API.Repositories.Implementation
 {
@@ -17,6 +18,11 @@ namespace FirstProject.API.Repositories.Implementation
             await _db.Categories.AddAsync(category);
             await _db.SaveChangesAsync();
             return category;
+        }
+
+        public async Task<IEnumerable<Category>> GetAllAsync()
+        {
+            return await _db.Categories.ToListAsync();
         }
     }
 }

@@ -36,5 +36,23 @@ namespace FirstProject.API.Controllers
             
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var categories = await _categoryRepository.GetAllAsync();
+            var response = new List<CategoryDto>();
+            foreach (var category in categories)
+            {
+                response.Add(new CategoryDto
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    HandleUrl = category.HandleUrl
+                });
+            }
+            return Ok(response);
+        }
+
     }
 }
