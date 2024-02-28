@@ -1,6 +1,7 @@
 ﻿using FirstProject.API.Data;
 using FirstProject.API.Models.Domain;
 using FirstProject.API.Models.DTOs;
+using FirstProject.API.Repositories.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,10 @@ namespace FirstProject.API.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ApplicationDbContext _db;
-        public CategoriesController(ApplicationDbContext db)
+        private readonly ICategoryRepository _categoryRepository;
+        public CategoriesController(ICategoryRepository categoryRepository)
         {
-            _db = db;
+            _categoryRepository = categoryRepository;
         }
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody]CreateCategoryRequestDto request)
@@ -23,6 +24,7 @@ namespace FirstProject.API.Controllers
                 Name = request.Name,
                 HandleUrl = request.HandleUrl,
             };
+            await _categoryRepository.CreateAsync(category);
 
             var response = new CategoryDto
             {
@@ -31,8 +33,7 @@ namespace FirstProject.API.Controllers
                 HandleUrl = category.HandleUrl,
             };
 
-            await _db.Categories.AddAsync(category);
-            await _db.SaveChangesAsync();
+            
             return Ok();
         }
     }
